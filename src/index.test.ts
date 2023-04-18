@@ -12,7 +12,7 @@ import {
   isTypedArray,
 } from './is';
 
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'bson';
 import { Decimal } from 'decimal.js';
 
 const isNode10 = process.version.indexOf('v10') === 0;
@@ -494,17 +494,17 @@ describe('stringify & parse', () => {
 
     'works for custom transformers': {
       input: () => {
-        SuperJSON.registerCustom<ObjectID, string>(
+        SuperJSON.registerCustom<ObjectId, string>(
           {
-            isApplicable: (v): v is ObjectID => v instanceof ObjectID,
+            isApplicable: (v): v is ObjectId => v instanceof ObjectId,
             serialize: v => v.toHexString(),
-            deserialize: v => new ObjectID(v),
+            deserialize: v => new ObjectId(v),
           },
           'objectid'
         );
 
         return {
-          a: new ObjectID('5f7887f4f0b172093e89f126'),
+          a: new ObjectId('5f7887f4f0b172093e89f126'),
         };
       },
       output: {
@@ -977,8 +977,8 @@ test('regression https://github.com/blitz-js/babel-plugin-superjson-next/issues/
 test('performance regression', () => {
   const data: any[] = [];
   for (let i = 0; i < 100; i++) {
-    let nested1 = [];
-    let nested2 = [];
+    let nested1: any[] = [];
+    let nested2: any[] = [];
     for (let j = 0; j < 10; j++) {
       nested1[j] = {
         createdAt: new Date(),
